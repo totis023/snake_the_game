@@ -89,5 +89,7 @@ namespace snake_the_game.controllers
                 Console.Write("O");
             }
         }
+
+        //arreglar el el hecho de que se mueve todo
     }
 }
