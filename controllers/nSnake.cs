@@ -20,13 +20,17 @@ namespace snake_the_game.controllers
             Console.Clear();
             Console.CursorVisible = false;
 
-            Console.SetWindowSize(ancho + 2, alto + 2); //ajusta el tamaño de la ventana para que se ajuste al area de juego
-            Console.SetBufferSize(ancho + 2, alto + 2); //fija el tama;o del buffer para evitar scroll
+            //Console.SetBufferSize(ancho + 2, alto + 2); //fija el tamaño del buffer para evitar scroll
+            //Console.SetWindowSize(ancho + 2, alto + 2); //ajusta el tamaño de la ventana para que se ajuste al area de juego
 
             Snake snake = new Snake();
             bool juegoFunca = true; //es la variable para ver si el juego sigue en marcha o se acaba
 
             DibujarBordes();
+
+            //genera la comida del inicio
+            comida = controladorComida.GenerarComida(snake, ancho, alto);
+            controladorComida.DibujarComida(comida);
 
             while(juegoFunca)
             {
@@ -58,10 +62,6 @@ namespace snake_the_game.controllers
                 }
 
                 DibujarSerpiente(snake);
-
-                //genera la comida del inicio
-                comida = controladorComida.GenerarComida(snake, ancho, alto);
-                controladorComida.DibujarComida(comida);
 
                 //cuando la serpiente come genera una nueva comida
                 if (cabeza.x == comida.x && cabeza.y == comida.y)
