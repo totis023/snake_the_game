@@ -8,18 +8,21 @@ namespace snake_the_game.controllers
     class nSnake
     {
         //medidas de donde se mueve la serpiente
-        private int ancho = 70;
-        private int alto = 15; //min 12 porque sino empieza a fallar ya que la consola de windows tiene un minimo permitido
+        private int ancho = 90;
+        private int alto = 13; //min 12 porque sino empieza a fallar ya que la consola de windows tiene un minimo permitido
 
         public void IniciarJuego()
         {
             Console.CursorVisible = false;
 
-            Console.SetWindowSize(ancho + 2, alto + 2); //ajuso el tama;o de la ventana para que se ajuste al area de juego
-            Console.SetBufferSize(ancho + 2, alto + 2);// fija el tama;o del buffer para evitar scroll
+            Console.SetWindowSize(ancho + 2, alto +2); //ajuso el tama;o de la ventana para que se ajuste al area de juego
+            Console.SetBufferSize(ancho +2, alto +2);// fija el tama;o del buffer para evitar scroll
 
             Snake snake = new Snake();
             bool juegoFunca = true; //es la variable para ver si el juego sigue en marcha o se acaba
+
+            DibujarBordes();// para que se dibujen una sola vez, y no se vean eso de que vuelven a aparecer.
+
 
             while(juegoFunca)
             {
@@ -64,8 +67,28 @@ namespace snake_the_game.controllers
 
         private void Dibujar(Snake snake)
         {
-            Console.Clear();
+            //Console.Clear();
+            Console.SetCursorPosition(0, 0);
 
+            for (int y = 1; y < alto - 1; y++)
+            {
+                for (int x = 1; x < ancho - 1; x++)
+                {
+                    Console.SetCursorPosition(x, y);
+                    Console.Write(" ");
+                }
+            }
+
+            foreach(var parte in snake.Cuerpo)
+            {
+                Console.SetCursorPosition(parte.x, parte.y);
+                Console.Write("O");
+            }
+        }
+        
+        
+        private void DibujarBordes()
+        {
             //dibujo de bordes de arriba y deabajo
             for (int i = 0; i < ancho; i++)
             {
@@ -82,14 +105,7 @@ namespace snake_the_game.controllers
                 Console.SetCursorPosition(ancho - 1, i);
                 Console.Write("#");
             }
-
-            foreach(var parte in snake.Cuerpo)
-            {
-                Console.SetCursorPosition(parte.x, parte.y);
-                Console.Write("O");
-            }
         }
-
         //arreglar el el hecho de que se mueve todo
     }
 }
