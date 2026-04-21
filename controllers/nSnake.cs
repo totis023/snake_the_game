@@ -13,7 +13,7 @@ namespace snake_the_game.controllers
         private int alto = 15; //min 12 porque sino empieza a fallar ya que la consola de windows tiene un minimo permitido
 
         nComida controladorComida = new nComida();
-        Comida comida;
+        Comida ?comida;
 
         public void IniciarJuego()
         {
