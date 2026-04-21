@@ -53,7 +53,7 @@ namespace snake_the_game.controllers
                 snake.Mover();
 
                  //colision con el cuerpo
-                if (snake.CochoConSiMisma())
+                if (snake.ChocoConSiMisma())
                 {
                     juegoFunca = false; //el juego termina
                     break;
