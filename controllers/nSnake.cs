@@ -9,11 +9,12 @@ namespace snake_the_game.controllers
     class nSnake
     {
         //medidas de donde se mueve la serpiente
-        private int ancho = 50;
-        private int alto = 15; //min 12 porque sino empieza a fallar ya que la consola de windows tiene un minimo permitido
-
+        private int ancho = 40;
+        private int alto = 25; //min 12 porque sino empieza a fallar ya que la consola de windows tiene un minimo permitido
+        Snake snake = new Snake();
         nComida controladorComida = new nComida();
-        Comida ?comida;
+        List<Comida> comida = new List<Comida>();
+        nNivel controladorNivel = new nNivel();
 
         public void IniciarJuego()
         {
@@ -22,15 +23,17 @@ namespace snake_the_game.controllers
 
             //Console.SetBufferSize(ancho + 2, alto + 2); //fija el tamaño del buffer para evitar scroll
             //Console.SetWindowSize(ancho + 2, alto + 2); //ajusta el tamaño de la ventana para que se ajuste al area de juego
-
-            Snake snake = new Snake();
+            
             bool juegoFunca = true; //es la variable para ver si el juego sigue en marcha o se acaba
 
             DibujarBordes();
 
-            //genera la comida del inicio
-            comida = controladorComida.GenerarComida(snake, ancho, alto);
-            controladorComida.DibujarComida(comida);
+            for (int i = 0; i < controladorNivel.nivel.Numero; i++)
+            {
+                var nueva = controladorComida.GenerarComida(snake, ancho, alto);
+                comida.Add(nueva);
+                controladorComida.DibujarComida(nueva);
+            }
 
             while(juegoFunca)
             {
@@ -52,7 +55,7 @@ namespace snake_the_game.controllers
 
                 snake.Mover();
 
-                 //colision con el cuerpo
+                //colision con el cuerpo
                 if (snake.ChocoConSiMisma())
                 {
                     juegoFunca = false; //el juego termina
@@ -72,16 +75,49 @@ namespace snake_the_game.controllers
                 DibujarSerpiente(snake);
 
                 //cuando la serpiente come genera una nueva comida
-                if (cabeza.x == comida.x && cabeza.y == comida.y)
+                for (int i = 0; i < comida.Count; i++)
                 {
-                    snake.Crecer();
-                    comida = controladorComida.GenerarComida(snake, ancho, alto);
-                    controladorComida.DibujarComida(comida);
+                    if (cabeza.x == comida[i].x && cabeza.y == comida[i].y)
+                    {
+                        snake.Crecer();
+
+                        //registra la comida para los niveles
+                        bool subioNivel = controladorNivel.RegistrarComida();
+                        //elimina la comida que ya se comio
+                        comida.RemoveAt(i);
+                        
+                        //genera nueva comida manteniendo la cantidad
+                        var nueva = controladorComida.GenerarComida(snake, ancho, alto);
+                        comida.Add(nueva);
+                        controladorComida.DibujarComida(nueva);
+
+                        //si subio el nivel se agrega una comida extra
+                        if (subioNivel)
+                        {
+                            var extra = controladorComida.GenerarComida(snake, ancho, alto);
+                            comida.Add(extra);
+                            controladorComida.DibujarComida(extra);
+                        }
+
+                        break;
+                    }
                 }
 
                 Thread.Sleep(150); //velocidad del juego
+
+                //hud de comida y nivel
+                string texto = $"Nivel: {controladorNivel.nivel.Numero}  Comidas: {controladorNivel.nivel.ComidaConsumida}";
+                int x = (ancho / 2) - (texto.Length / 2);
+
+                Console.SetCursorPosition(x, alto);
+                Console.Write(texto + "   ");
+
             }
             GameOver();
+            ImprimirPuntajes(snake);
+    
+            Console.WriteLine("\nPresiona cualquier tecla para cerrar...");
+            Console.ReadKey(true);
         }
 
         private void DibujarSerpiente(Snake snake)
@@ -94,7 +130,9 @@ namespace snake_the_game.controllers
             //dibujar una nueva cabeza
             var cabeza = snake.ObtenerCabeza();
             Console.SetCursorPosition(cabeza.x, cabeza.y);
+            Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("O");
+            Console.ResetColor();
         }
 
         private void DibujarBordes()
@@ -133,8 +171,79 @@ namespace snake_the_game.controllers
             Console.Write("Game Over!!!");
             Console.SetCursorPosition(ancho - 5, alto);
             Console.ResetColor();
-            Console.WriteLine("\nToca cuaqueri letra para salir...");
+            Console.WriteLine("\nToca cualquier tecla para ir a la tabla...");
             Console.ReadKey(true); //si pongo false la letra aparece en pantalla y no quiero eso.
+        }
+        
+        public void ImprimirPuntajes(Snake snake)
+        {
+            Console.Clear();
+            Console.ResetColor();
+
+            int puntajeFinal = snake.Cuerpo.Count - 1; 
+
+            string[,] tablaResultados = new string[2, 2];
+
+            // Fila 0: Títulos
+            tablaResultados[0, 0] = "Concepto";
+            tablaResultados[0, 1] = "Detalle";
+
+            // Fila 1: Datos de la partida
+            tablaResultados[1, 0] = "Puntaje Total";
+            tablaResultados[1, 1] = puntajeFinal.ToString() + " pts";
+
+            DibujaTabla(tablaResultados);
+        }
+        private void DibujaTabla(string[,] matriz)
+        {
+            int filas = matriz.GetLength(0);
+            int columnas = matriz.GetLength(1);
+
+            int[] anchos = new int[columnas];
+            for (int c = 0; c < columnas; c++)
+            {
+                for (int f = 0; f < filas; f++)
+                {
+                    if (matriz[f, c].Length > anchos[c])
+                        anchos[c] = matriz[f, c].Length;
+                }
+                anchos[c] += 2;
+            }
+
+            // Dibujo de la tabla
+            for (int f = 0; f < filas; f++)
+            {    
+                // Línea superior de la fila
+                ImprimirLineaBorde(anchos);
+
+                for (int c = 0; c < columnas; c++)
+                {
+                    Console.Write("║"); // Borde vertical
+
+                    if (f == 0) // Si es la fila de títulos
+                    {
+                        Console.ForegroundColor = ConsoleColor.Yellow; // Color de títulos
+                        Console.Write($" {matriz[f, c].PadRight(anchos[c] - 1)}");
+                        Console.ResetColor();
+                    }
+                    else
+                    {
+                        Console.Write($" {matriz[f, c].PadRight(anchos[c] - 1)}");
+                    }
+                }
+                Console.WriteLine("║");
+            }
+            //línea de cierre final
+            ImprimirLineaBorde(anchos);
+        }
+    
+        private void ImprimirLineaBorde(int[] anchos)
+        {
+            foreach (int ancho in anchos)
+            {
+                Console.Write("╬" + new string('═', ancho));
+            }
+            Console.WriteLine("╬");
         }
     }
 }
