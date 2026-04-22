@@ -180,7 +180,8 @@ namespace snake_the_game.controllers
             Console.Clear();
             Console.ResetColor();
 
-            int puntajeFinal = snake.Cuerpo.Count - 1; 
+            int puntajeFinal = controladorNivel.nivel.ComidaConsumida;
+            int nivelAlcanzado = controladorNivel.nivel.Numero; //esta variable la agregue para que tambien se añada a la tabla
 
             string[,] tablaResultados = new string[2, 2];
 
