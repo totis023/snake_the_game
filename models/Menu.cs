@@ -5,7 +5,7 @@ namespace snake_the_game.models
 {
     class Menu
     {
-        static ResultadoJuego ultimoResultado = null;
+        static ResultadoJuego? ultimoResultado = null;
         public static void Show()
         {
             string[] opciones = { "Jugar", "Ver Tabla", "Salir" };
