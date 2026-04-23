@@ -10,7 +10,7 @@ namespace snake_the_game.models
         {
             Numero = 1;
             ComidaConsumida = 0;
-            ComidasParaSubir = 15;
+            ComidasParaSubir = 10;
         }
     }
 }

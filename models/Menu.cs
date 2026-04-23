@@ -64,39 +64,34 @@ namespace snake_the_game.models
                 Console.Clear();
                 Console.CursorVisible = false;
 
-                int left = (Console.WindowWidth - ancho) / 2;
-                int top = (Console.WindowHeight - alto) / 2;
+                //esquinas
+                Console.SetCursorPosition(0, 0); Console.Write("╔");
+                Console.SetCursorPosition(ancho - 1, 0); Console.Write("╗");
+                Console.SetCursorPosition(0, alto - 1); Console.Write("╚");
+                Console.SetCursorPosition(ancho - 1, alto - 1); Console.Write("╝");
 
-                // ===== BORDES (MISMO ESTILO QUE EL JUEGO) =====
-
-                // Esquinas
-                Console.SetCursorPosition(left, top); Console.Write("╔");
-                Console.SetCursorPosition(left + ancho - 1, top); Console.Write("╗");
-                Console.SetCursorPosition(left, top + alto - 1); Console.Write("╚");
-                Console.SetCursorPosition(left + ancho - 1, top + alto - 1); Console.Write("╝");
-
-                // Líneas horizontales
+                //lineas horizontales
                 for (int i = 1; i < ancho - 1; i++)
                 {
-                    Console.SetCursorPosition(left + i, top);
+                    Console.SetCursorPosition(i, 0);
                     Console.Write("═");
 
-                    Console.SetCursorPosition(left + i, top + alto - 1);
+                    Console.SetCursorPosition(i, alto - 1);
                     Console.Write("═");
                 }
 
-                // Líneas verticales
+                //lineas verticales
                 for (int i = 1; i < alto - 1; i++)
                 {
-                    Console.SetCursorPosition(left, top + i);
+                    Console.SetCursorPosition(0, i);
                     Console.Write("║");
 
-                    Console.SetCursorPosition(left + ancho - 1, top + i);
+                    Console.SetCursorPosition(ancho - 1, i);
                     Console.Write("║");
                 }
 
                 // ===== TÍTULO =====
-                Console.SetCursorPosition(left + (ancho / 2 - titulo.Length / 2), top + 1);
+                Console.SetCursorPosition(0 + (ancho / 2 - titulo.Length / 2), 0 + 1);
                 Console.ForegroundColor = ConsoleColor.Green;
                 Console.Write(titulo);
                 Console.ResetColor();
@@ -104,8 +99,8 @@ namespace snake_the_game.models
                 // ===== OPCIONES =====
                 for (int i = 0; i < opciones.Length; i++)
                 {
-                    int y = top + 3 + i;
-                    int x = left + 3;
+                    int y = 3 + i;
+                    int x = 3;
 
                     Console.SetCursorPosition(x, y);
 

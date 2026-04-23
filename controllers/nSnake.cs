@@ -21,9 +21,6 @@ namespace snake_the_game.controllers
             Console.Clear();
             Console.CursorVisible = false;
 
-            //Console.SetBufferSize(ancho + 2, alto + 2); //fija el tamaño del buffer para evitar scroll
-            //Console.SetWindowSize(ancho + 2, alto + 2); //ajusta el tamaño de la ventana para que se ajuste al area de juego
-            
             bool juegoFunca = true; //es la variable para ver si el juego sigue en marcha o se acaba
 
             DibujarBordes();
@@ -61,7 +58,6 @@ namespace snake_the_game.controllers
                     juegoFunca = false; //el juego termina
                     break;
                 }
-
 
                 //para comprobar cuando la cabeza choca con los bordes
                 var cabeza = snake.ObtenerCabeza();
